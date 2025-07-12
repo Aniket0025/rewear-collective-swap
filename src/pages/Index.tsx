@@ -11,9 +11,20 @@ import {
   User, 
   ShoppingBag, 
   Plus,
-  ChevronLeft,
-  ChevronRight
+  Upload,
+  Coins,
+  RefreshCw,
+  MessageCircle,
+  CheckCircle,
+  TrendingUp
 } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import AuthForm from '@/components/AuthForm';
 import UserDashboard from '@/components/UserDashboard';
 import ItemDetail from '@/components/ItemDetail';
@@ -77,6 +88,38 @@ const Index = () => {
       tags: ["knit", "warm", "casual"],
       available: true,
       likes: 15
+    },
+    {
+      id: 4,
+      title: "Classic White Sneakers",
+      description: "Minimalist white sneakers in great condition",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&h=600&fit=crop",
+      points: 30,
+      condition: "Very Good",
+      size: "9",
+      category: "Shoes",
+      uploader: "Alex K.",
+      location: "Brooklyn, NY",
+      user: { name: "Alex K.", avatar: "/placeholder.svg", location: "Brooklyn, NY" },
+      tags: ["sneakers", "minimalist", "casual"],
+      available: true,
+      likes: 20
+    },
+    {
+      id: 5,
+      title: "Bohemian Summer Dress",
+      description: "Flowy bohemian dress perfect for summer",
+      image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&h=600&fit=crop",
+      points: 28,
+      condition: "Excellent",
+      size: "M",
+      category: "Dresses",
+      uploader: "Luna P.",
+      location: "Manhattan, NY",
+      user: { name: "Luna P.", avatar: "/placeholder.svg", location: "Manhattan, NY" },
+      tags: ["bohemian", "summer", "flowy"],
+      available: true,
+      likes: 18
     }
   ]);
 
@@ -84,13 +127,13 @@ const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const categories = [
-    { name: 'All', icon: '👕', count: 120 },
-    { name: 'Tops', icon: '👔', count: 45 },
-    { name: 'Bottoms', icon: '👖', count: 32 },
-    { name: 'Dresses', icon: '👗', count: 28 },
-    { name: 'Outerwear', icon: '🧥', count: 15 },
-    { name: 'Shoes', icon: '👠', count: 25 },
-    { name: 'Accessories', icon: '👜', count: 18 }
+    { name: 'All', icon: '👕', count: 120, color: 'bg-blue-50 hover:bg-blue-100' },
+    { name: 'Tops', icon: '👔', count: 45, color: 'bg-green-50 hover:bg-green-100' },
+    { name: 'Bottoms', icon: '👖', count: 32, color: 'bg-purple-50 hover:bg-purple-100' },
+    { name: 'Dresses', icon: '👗', count: 28, color: 'bg-pink-50 hover:bg-pink-100' },
+    { name: 'Outerwear', icon: '🧥', count: 15, color: 'bg-orange-50 hover:bg-orange-100' },
+    { name: 'Shoes', icon: '👠', count: 25, color: 'bg-red-50 hover:bg-red-100' },
+    { name: 'Accessories', icon: '👜', count: 18, color: 'bg-yellow-50 hover:bg-yellow-100' }
   ];
 
   // Mock user for testing
@@ -191,10 +234,10 @@ const Index = () => {
                 onClick={() => setCurrentView('browse')}
                 className="text-foreground hover:text-primary transition-colors"
               >
-                Browse
+                Browse Items
               </button>
-              <button className="text-foreground hover:text-primary transition-colors">How It Works</button>
               <button className="text-foreground hover:text-primary transition-colors">Community</button>
+              <button className="text-foreground hover:text-primary transition-colors">How It Works</button>
             </nav>
 
             <div className="flex items-center space-x-3">
@@ -291,80 +334,132 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-foreground">Featured Items</h2>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm" onClick={prevSlide}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={nextSlide}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+            <Badge variant="outline" className="text-sm">Most Viewed This Week</Badge>
           </div>
 
-          <div className="relative overflow-hidden rounded-lg">
-            <div 
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
+          <Carousel className="w-full">
+            <CarouselContent className="-ml-4">
               {featuredItems.map((item) => (
-                <div key={item.id} className="w-full flex-shrink-0 px-2">
+                <CarouselItem key={item.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card 
-                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                    className="cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1"
                     onClick={() => {
                       setSelectedItem(item);
                       setCurrentView('itemListing');
                     }}
                   >
                     <CardContent className="p-0">
-                      <div className="grid md:grid-cols-2 gap-6 p-6">
-                        <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                          <img 
-                            src={item.image} 
-                            alt={item.title}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
+                      <div className="aspect-square bg-muted relative overflow-hidden rounded-t-lg">
+                        <img 
+                          src={item.image} 
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <button className="absolute top-3 right-3 p-2 bg-background/80 rounded-full hover:bg-background transition-colors">
+                          <Heart className="h-4 w-4" />
+                        </button>
+                        {item.available && (
+                          <Badge className="absolute top-3 left-3 bg-green-500 hover:bg-green-600">
+                            Available
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold mb-1 truncate">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="secondary" className="text-xs">{item.condition}</Badge>
+                            <span className="text-xs text-muted-foreground">Size {item.size}</span>
+                          </div>
+                          <div className="flex items-center text-primary font-bold">
+                            <Star className="h-3 w-3 mr-1" />
+                            <span className="text-sm">{item.points}</span>
+                          </div>
                         </div>
-                        <div className="flex flex-col justify-center space-y-4">
-                          <div>
-                            <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
-                            <p className="text-muted-foreground mb-4">{item.description}</p>
-                          </div>
-                          <div className="flex items-center space-x-4">
-                            <Badge variant="secondary">{item.condition}</Badge>
-                            <Badge variant="outline">Size {item.size}</Badge>
-                            <div className="flex items-center text-primary font-bold">
-                              <Star className="h-4 w-4 mr-1" />
-                              {item.points} points
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <User className="h-4 w-4" />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <User className="h-3 w-3 mr-1" />
                             <span>{item.user.name}</span>
-                            <MapPin className="h-4 w-4 ml-2" />
-                            <span>{item.user.location}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Heart className="h-3 w-3 mr-1" />
+                            <span>{item.likes}</span>
                           </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
+                </CarouselItem>
               ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">How It Works</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Three simple steps to start your sustainable fashion journey
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Upload className="h-8 w-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">1. Upload Your Items</h3>
+              <p className="text-muted-foreground">
+                Take photos of clothes you no longer wear and list them on our platform with detailed descriptions.
+              </p>
             </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Coins className="h-8 w-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">2. Earn Points</h3>
+              <p className="text-muted-foreground">
+                When someone swaps or redeems your items, you earn points based on the item's condition and demand.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <RefreshCw className="h-8 w-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">3. Swap & Shop</h3>
+              <p className="text-muted-foreground">
+                Use your points to get items you love, or arrange direct swaps with other community members.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Button size="lg" onClick={() => setCurrentView('auth')}>
+              Get Started Today
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
             {categories.map((category) => (
               <Card 
                 key={category.name}
-                className={`cursor-pointer transition-all hover:shadow-md ${
+                className={`cursor-pointer transition-all hover:shadow-md transform hover:scale-105 ${
                   selectedCategory === category.name ? 'ring-2 ring-primary' : ''
-                }`}
+                } ${category.color}`}
                 onClick={() => setSelectedCategory(category.name)}
               >
                 <CardContent className="p-6 text-center">
@@ -452,6 +547,17 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Chatbot */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button 
+          size="lg" 
+          className="rounded-full h-14 w-14 shadow-lg hover:shadow-xl transition-all"
+          onClick={() => {/* Add chatbot functionality */}}
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+      </div>
 
       {/* Footer */}
       <footer className="bg-muted py-12">
