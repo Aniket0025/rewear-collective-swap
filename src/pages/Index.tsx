@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +14,12 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { AuthForm } from '@/components/AuthForm';
-import { UserDashboard } from '@/components/UserDashboard';
-import { ItemDetail } from '@/components/ItemDetail';
-import { AddItem } from '@/components/AddItem';
-import { ItemListing } from '@/components/ItemListing';
-import { AdminPanel } from '@/components/AdminPanel';
+import AuthForm from '@/components/AuthForm';
+import UserDashboard from '@/components/UserDashboard';
+import ItemDetail from '@/components/ItemDetail';
+import AddItem from '@/components/AddItem';
+import ItemListing from '@/components/ItemListing';
+import AdminPanel from '@/components/AdminPanel';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState('landing');
