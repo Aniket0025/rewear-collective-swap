@@ -15,6 +15,8 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import { Map } from './Map';
+import { EcoScore, calculateEcoScore } from './EcoScore';
 
 interface ItemListingProps {
   item: any;
@@ -31,6 +33,28 @@ export const ItemListing = ({ item, relatedItems, onBack, onItemClick }: ItemLis
   // Mock multiple images for the item
   const itemImages = [item.image, item.image, item.image];
 
+  // Mock location data for map
+  const nearbyListings = [
+    {
+      id: 1,
+      title: "Vintage Denim Jacket",
+      uploader: "Sarah M.",
+      location: { lat: 40.7128, lng: -74.0060, address: "New York, NY" },
+      points: 120,
+      condition: "Good",
+      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop"
+    },
+    {
+      id: 2,
+      title: "Floral Summer Dress",
+      uploader: "Emma L.",
+      location: { lat: 40.7589, lng: -73.9851, address: "Manhattan, NY" },
+      points: 95,
+      condition: "Excellent",
+      image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=400&fit=crop"
+    }
+  ];
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % itemImages.length);
   };
@@ -38,6 +62,14 @@ export const ItemListing = ({ item, relatedItems, onBack, onItemClick }: ItemLis
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + itemImages.length) % itemImages.length);
   };
+
+  // Calculate EcoScore for the item
+  const ecoScore = calculateEcoScore({
+    condition: item.condition,
+    reuseCount: item.reuseCount || 1,
+    category: item.category,
+    trustScore: item.trustScore || 4.5
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,6 +173,7 @@ export const ItemListing = ({ item, relatedItems, onBack, onItemClick }: ItemLis
                   <Star className="h-4 w-4 mr-1" />
                   <span>{item.points} points</span>
                 </div>
+                <EcoScore score={ecoScore} showLabel />
               </div>
 
               {/* Tags */}
@@ -220,42 +253,68 @@ export const ItemListing = ({ item, relatedItems, onBack, onItemClick }: ItemLis
           </div>
         </div>
 
+        {/* Map Section */}
+        <section className="mt-16">
+          <h2 className="text-2xl font-bold mb-8">Nearby Listings</h2>
+          <Map 
+            listings={nearbyListings}
+            onViewListing={(id) => {
+              const listing = nearbyListings.find(l => l.id === id);
+              if (listing) {
+                console.log('View listing:', listing);
+                // Handle navigation to listing
+              }
+            }}
+            className="mb-8"
+          />
+        </section>
+
         {/* Related Items */}
         <section className="mt-16">
           <h2 className="text-2xl font-bold mb-8">Related Items</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-            {relatedItems.map((relatedItem) => (
-              <Card 
-                key={relatedItem.id}
-                className="cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1"
-                onClick={() => onItemClick(relatedItem)}
-              >
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-muted relative overflow-hidden rounded-t-lg">
-                    <img 
-                      src={relatedItem.image} 
-                      alt={relatedItem.title}
-                      className="w-full h-full object-cover"
-                    />
-                    {relatedItem.available && (
-                      <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600 text-xs">
-                        Available
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm mb-1 truncate">{relatedItem.title}</h3>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-xs">{relatedItem.condition}</Badge>
-                      <div className="flex items-center text-primary text-sm">
-                        <Star className="h-3 w-3 mr-1" />
-                        <span>{relatedItem.points}</span>
-                      </div>
+            {relatedItems.map((relatedItem) => {
+              const relatedEcoScore = calculateEcoScore({
+                condition: relatedItem.condition,
+                reuseCount: relatedItem.reuseCount || 1,
+                category: relatedItem.category,
+                trustScore: relatedItem.trustScore || 4.5
+              });
+
+              return (
+                <Card 
+                  key={relatedItem.id}
+                  className="cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1"
+                  onClick={() => onItemClick(relatedItem)}
+                >
+                  <CardContent className="p-0">
+                    <div className="aspect-square bg-muted relative overflow-hidden rounded-t-lg">
+                      <img 
+                        src={relatedItem.image} 
+                        alt={relatedItem.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {relatedItem.available && (
+                        <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-600 text-xs">
+                          Available
+                        </Badge>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="p-3">
+                      <h3 className="font-semibold text-sm mb-1 truncate">{relatedItem.title}</h3>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary" className="text-xs">{relatedItem.condition}</Badge>
+                        <div className="flex items-center text-primary text-sm">
+                          <Star className="h-3 w-3 mr-1" />
+                          <span>{relatedItem.points}</span>
+                        </div>
+                      </div>
+                      <EcoScore score={relatedEcoScore} size="sm" />
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </section>
       </div>
