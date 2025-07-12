@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +9,30 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
-const AddItem = ({ user, onBack, onSuccess }) => {
-  const [formData, setFormData] = useState({
+interface ImageUpload {
+  id: number;
+  url: string;
+  file: File;
+}
+
+interface FormData {
+  title: string;
+  description: string;
+  category: string;
+  type: string;
+  size: string;
+  condition: string;
+  estimatedPoints: number;
+}
+
+interface AddItemProps {
+  user: any;
+  onBack: () => void;
+  onSuccess: () => void;
+}
+
+const AddItem = ({ user, onBack, onSuccess }: AddItemProps) => {
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     category: '',
@@ -21,13 +42,13 @@ const AddItem = ({ user, onBack, onSuccess }) => {
     estimatedPoints: 0
   });
   
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageUpload[]>([]);
 
   const categories = ['Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', 'Accessories'];
   const conditions = ['Like New', 'Excellent', 'Good', 'Fair'];
-  const sizes = {
+  const sizes: Record<string, string[]> = {
     'Tops': ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     'Bottoms': ['24', '26', '28', '30', '32', '34', '36', '38'],
     'Dresses': ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -36,7 +57,7 @@ const AddItem = ({ user, onBack, onSuccess }) => {
     'Accessories': ['One Size', 'S', 'M', 'L']
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
       
@@ -72,18 +93,18 @@ const AddItem = ({ user, onBack, onSuccess }) => {
     }
   };
 
-  const removeTag = (tagToRemove) => {
+  const removeTag = (tagToRemove: string) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImages(prev => [...prev, {
           id: Date.now() + Math.random(),
-          url: event.target.result,
+          url: event.target?.result as string,
           file: file
         }]);
       };
@@ -91,11 +112,11 @@ const AddItem = ({ user, onBack, onSuccess }) => {
     });
   };
 
-  const removeImage = (imageId) => {
+  const removeImage = (imageId: number) => {
     setImages(images.filter(img => img.id !== imageId));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.category || !formData.condition || images.length === 0) {
