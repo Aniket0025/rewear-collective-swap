@@ -18,8 +18,8 @@ import AuthForm from '@/components/AuthForm';
 import UserDashboard from '@/components/UserDashboard';
 import ItemDetail from '@/components/ItemDetail';
 import AddItem from '@/components/AddItem';
-import ItemListing from '@/components/ItemListing';
-import AdminPanel from '@/components/AdminPanel';
+import { ItemListing } from '@/components/ItemListing';
+import { AdminPanel } from '@/components/AdminPanel';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState('landing');
@@ -119,11 +119,18 @@ const Index = () => {
   };
 
   if (currentView === 'auth') {
-    return <AuthForm onLogin={handleLogin} onBack={() => setCurrentView('landing')} />;
+    return <AuthForm onSuccess={handleLogin} />;
   }
 
   if (currentView === 'dashboard' && user) {
-    return <UserDashboard user={user} onBack={() => setCurrentView('landing')} />;
+    return <UserDashboard 
+      user={user} 
+      onNavigate={(view) => setCurrentView(view)}
+      onItemClick={(item) => {
+        setSelectedItem(item);
+        setCurrentView('itemDetail');
+      }}
+    />;
   }
 
   if (currentView === 'addItem' && user) {
