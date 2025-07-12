@@ -34,40 +34,49 @@ const Index = () => {
       id: 1,
       title: "Vintage Denim Jacket",
       description: "Classic 90s denim jacket in excellent condition",
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1544966503-7cc6da4e6f84?w=600&h=600&fit=crop",
       points: 25,
       condition: "Excellent",
       size: "M",
       category: "Outerwear",
+      uploader: "Sarah M.",
+      location: "Brooklyn, NY",
       user: { name: "Sarah M.", avatar: "/placeholder.svg", location: "Brooklyn, NY" },
       tags: ["vintage", "denim", "casual"],
-      available: true
+      available: true,
+      likes: 12
     },
     {
       id: 2,
       title: "Designer Silk Blouse",
       description: "Elegant silk blouse perfect for office wear",
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&h=600&fit=crop",
       points: 35,
       condition: "Like New",
       size: "S",
       category: "Tops",
+      uploader: "Emma L.",
+      location: "Manhattan, NY",
       user: { name: "Emma L.", avatar: "/placeholder.svg", location: "Manhattan, NY" },
       tags: ["silk", "professional", "designer"],
-      available: true
+      available: true,
+      likes: 8
     },
     {
       id: 3,
       title: "Cozy Knit Sweater",
       description: "Warm and comfortable for winter days",
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=600&fit=crop",
       points: 20,
       condition: "Good",
       size: "L",
       category: "Tops",
+      uploader: "Mike R.",
+      location: "Queens, NY",
       user: { name: "Mike R.", avatar: "/placeholder.svg", location: "Queens, NY" },
       tags: ["knit", "warm", "casual"],
-      available: true
+      available: true,
+      likes: 15
     }
   ]);
 
